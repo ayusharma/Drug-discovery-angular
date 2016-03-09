@@ -11,7 +11,8 @@
 angular
   .module('yeomanD3App', [
     'ngRoute',
-    'ngSanitize'
+    'ngSanitize',
+    'angular-loading-bar'
   ])
   .config(function ($routeProvider) {
     $routeProvider

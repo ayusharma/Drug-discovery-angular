@@ -12,11 +12,11 @@ angular.module('yeomanD3App')
       restrict: 'E',
       link: function postLink(scope, element, attrs) {
 
-        var data = d3Service.barMethod();
+        var data = [5,20,100,15,20]
 
-        var w = parseInt(attrs.width);
-        var h = parseInt(attrs.height);
-        var p = parseInt(attrs.padding);
+        var w = 200;
+        var h = 300;
+        var p = 10;
 
         var svg = d3.select(element[0])
         .append('svg')

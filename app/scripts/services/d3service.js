@@ -35,8 +35,8 @@ angular.module('yeomanD3App')
 
   dataService.getDataofAsthma = function(){
 
-   return  $http.get('https://www.targetvalidation.org/api/latest/search?size=99999&from=0&q=asthma').then(function(res){
-      return res;
+   return  $http.get('http://localhost:5000/crawl').then(function(res){
+      return res.data;
     })
   }
 

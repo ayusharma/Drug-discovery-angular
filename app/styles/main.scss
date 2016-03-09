@@ -67,6 +67,24 @@ body {
   }
 }
 
+svg {
+    background-color: antiquewhite;
+}
+
+.node circle {
+    fill: steelblue;
+}
+.node text {
+    font: bold 12px sans-serif;
+    fill: darkred;
+    text-shadow: 0 1px 0 #fff;
+}
+.link {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: .2;
+}
+
 /* Responsive: Portrait tablets and up */
 @media screen and (min-width: 768px) {
   .container {
@@ -89,3 +107,26 @@ body {
     border-bottom: 0;
   }
 }
+
+
+
+
+.node circle {
+  fill: #fff;
+  stroke: steelblue;
+  stroke-width: 1.5px;
+}
+
+.node {
+  font: 10px sans-serif;
+}
+
+.link {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: 1.5px;
+}
+
+// .viz{
+//   transform: scale(0.2,0.2);
+// }

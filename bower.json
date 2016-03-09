@@ -6,7 +6,10 @@
     "bootstrap-sass-official": "^3.2.0",
     "angular-route": "^1.4.0",
     "angular-sanitize": "^1.4.0",
-    "d3": "^3.5.16"
+    "d3": "^3.5.16",
+    "lodash": "^4.6.1",
+    "angular-loading-bar": "^0.8.0",
+    "angular-animate": "^1.5.0"
   },
   "devDependencies": {
     "angular-mocks": "^1.4.0",
