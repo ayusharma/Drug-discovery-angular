@@ -29,4 +29,10 @@ angular
       .otherwise({
         redirectTo: '/'
       });
-  });
+  })
+
+  .run(function($rootScope){
+    $rootScope.diseases = {};
+    $rootScope.diseases.userselecteddatatypes = ["all"]
+
+  })

@@ -85,7 +85,8 @@
         <h5>Slected Diseases</h5>
         <span class="label label-default"
         style="margin-right:8px"
-        ng-repeat="x in diseases.userselected track by $index">
+        ng-repeat="x in diseases.userselected track by $index"
+        ng-click="removeDisease($event,x)">
         {{ x.fields.name[0] }}
       </span>
 
@@ -122,8 +123,15 @@
       <div class="panel-heading">
         <h3 class="panel-title">Draw Visualization</h3>
       </div>
-      <div class="panel-body viz">
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-md-3 buttons-d3">
+            <h5>Filters</h5>
+            
 
+          </div>
+          <div class="col-md-9 viz"></div>
+        </div>
       </div>
     </div>
   </div>

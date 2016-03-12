@@ -60,6 +60,26 @@ angular.module('yeomanD3App')
 
   }
 
+  dataService.DatatypeSelected = function(selected_datatypes,selected_diseases){
+
+		var req = {
+			method:'POST',
+			url: baseUrl+ 'diseases/datatypes',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			data:{
+				'selected_datatypes': selected_datatypes,
+        'selected_diseases': selected_diseases
+			}
+		}
+
+		return $http(req).then(function(res){
+			return res;
+		});
+
+  }
+
   return dataService;
 
 });
