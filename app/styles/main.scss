@@ -69,6 +69,7 @@ body {
 
 svg {
     background-color: antiquewhite;
+    border-radius: 5px;
 }
 
 .node circle {
@@ -126,7 +127,7 @@ svg {
   stroke: #ccc;
   stroke-width: 1.5px;
 }
-
+button:focus {outline:0;}
 // .viz{
 //   transform: scale(0.2,0.2);
 // }

@@ -33,6 +33,6 @@ angular
 
   .run(function($rootScope){
     $rootScope.diseases = {};
-    $rootScope.diseases.userselecteddatatypes = ["all"]
+    $rootScope.diseases.userselecteddatatypes = ["all"];
 
-  })
+  });

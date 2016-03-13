@@ -8,26 +8,13 @@
  * Controller of the yeomanD3App
  */
 angular.module('yeomanD3App')
-  .controller('MainCtrl',['$rootScope','$scope','Diseases',function ($rootScope,$scope,Diseases) {
-
-
-    //function to get a unique value from array
-      function unique(m){
-        var prev = m[0];
-        var m_sort = [];
-        m_sort.push(prev);
-        for (var i = 0; i < m.length; i++) {
-          if(m[i] != prev){
-            m_sort.push(m[i]);
-            prev = m[i];
-          }
-        };
-        return m_sort;
-      }
+  .controller('MainCtrl',['$rootScope','$scope','$route','Diseases',function ($rootScope,$scope,$route,Diseases) {
 
 
     $rootScope.diseases.userselected = []
     $rootScope.diseases.default = ''
+    $rootScope.diseases.datatypes = []
+
 
     //data for visualizatons
     //setting null at startup
@@ -35,10 +22,10 @@ angular.module('yeomanD3App')
 
     //function to get diseases
     function get_diseases(){
+      console.log("fired");
       Diseases.getAll().then(function(data){
         console.log(data.data.hits)
         $rootScope.diseases.names = data.data.hits;
-        // $rootScope.form = ''
       })
     }
 
@@ -55,7 +42,7 @@ angular.module('yeomanD3App')
     $rootScope.onSelectChange = function(){
 
 
-      if (_.findIndex($rootScope.diseases.userselected, $rootScope.diseases.default) < 0) {
+      if ($rootScope.diseases.userselected.indexOf($rootScope.diseases.default) < 0) {
         $rootScope.diseases.userselected.push($rootScope.diseases.default)
 
         get_disease_data()
@@ -70,10 +57,13 @@ angular.module('yeomanD3App')
 
     $rootScope.submitDiseaseCode = function(){
       if ($rootScope.diseases.crawlcode != null){
-
+        $rootScope.modaltext = "Crawling Data"
+        $('#myModal').modal("show")
         Diseases.crawl($rootScope.diseases.crawlcode).then(function(res){
-          console.log(res)
+          $rootScope.modaltext=""
+          $('#myModal').modal("hide")
           get_diseases();
+          console.log(res);
         })
 
       } else {
@@ -92,9 +82,76 @@ angular.module('yeomanD3App')
     }
 
     $rootScope.dendogram = function () {
-      dendogram();
+
+      if($rootScope.diseases.userselected.length) {
+        $('#myModal').modal("show");
+        dendogram()
+
+       }
+      else {
+      alert("Please select a disease")
+      }
+
     }
 
+    $rootScope.updateViz= function() {
+
+      _.remove($rootScope.diseases.userselecteddatatypes,function (n) {
+        return n === 'all'
+      })
+
+
+
+
+      $rootScope.diseases.datatypes.forEach(function(k){
+        if(k.value) {
+            $rootScope.diseases.userselecteddatatypes.push(k)
+            // k.value = true
+        }
+        else {
+          _.remove($rootScope.diseases.userselecteddatatypes,function (n) {
+                console.log("remoed")
+                // k.value = false
+                return n.datatype === k.datatype
+              })
+              if($rootScope.diseases.userselecteddatatypes.length === 0){
+                      $rootScope.diseases.userselecteddatatypes.push('all')
+                  }
+        }
+      })
+
+      console.log($rootScope.diseases.userselecteddatatypes);
+
+
+      // if(k === d.datatype) {
+      //   this.sele = k
+      // }
+      // if() {
+      //   console.log("dhjkfbhj");
+      //   $scope.k = checked ;
+      // } else {
+      //
+      // }
+
+      // if ($(event.target).hasClass("active")) {
+      //
+      //   $(event.target).removeClass("active")
+      //
+      //     _.remove($rootScope.diseases.userselecteddatatypes,function (n) {
+      //       console.log("remoed")
+      //       return n.datatype === d.datatype
+      //     })
+      //     if($rootScope.diseases.userselecteddatatypes.length === 0){
+      //         $rootScope.diseases.userselecteddatatypes.push('all')
+      //     }
+      // } else {
+      //
+      // $(event.target).addClass("active")
+      // }
+
+      dendogram();
+
+    }
     //function to draw dendogram visualization
     /////////////////////////////
     //////////////////////////////
@@ -106,12 +163,16 @@ angular.module('yeomanD3App')
 
 
       var targetSymbols = []
-      var datatypes = []
+
 
 
       d3.select("svg").remove();
+      // d3.select(".buttons-d3").remove();
+
 
       var data = $rootScope.diseases.vizdata.hits.hits;
+
+      console.log(data);
 
       var datatypeFlag = 'all'
 
@@ -126,22 +187,37 @@ angular.module('yeomanD3App')
 
      data.forEach(function (k) {
 
-      datatypes = _.uniqBy( _.concat(datatypes, k._source.datatypes))
+
+
+      // datatypes = _.uniqBy( _.concat(datatypes, k._source.datatypes))
+
+       k._source.datatypes.forEach(function(f){
+         if($rootScope.diseases.datatypes.map(_.property('datatype')).indexOf(f) < 0 ){
+           var datatypes_obj = {}
+           datatypes_obj["datatype"] = f;
+           datatypes_obj["count"] = 0;
+           datatypes_obj["value"] = false
+           $rootScope.diseases.datatypes.push(datatypes_obj);
+         }
+       })
+
+
+      k._source.facets.buckets.forEach(function(o){
+        var result = $.grep($rootScope.diseases.datatypes, function(e){ return e.datatype == o.key; });
+        if (result)
+          result[0].count = result[0].count + o.doc_count
+        else
+          result[0].count = 0
+      })
 
        k._source.data.forEach(function(p){
 
-        //  if(targetSymbols.indexOf (p.target.symbol) < 0) {
-        //    targetSymbols.push(p.target.symbol)
-        //  }
 
          p.datatypes.forEach(function(z){
-
            if($rootScope.diseases.userselecteddatatypes.indexOf("all") >= 0 && z.association_score >= 0 ) {
              targetSymbols.push(p.target.symbol)
-             console.log("dlfmekmf kk")
-           } else if ($rootScope.diseases.userselecteddatatypes.indexOf(z.datatype) >= 0 && z.association_score > 0){
+          } else if ($rootScope.diseases.userselecteddatatypes.map(_.property('datatype')).indexOf(z.datatype) >= 0 && z.association_score > 0){
              targetSymbols.push(p.target.symbol)
-             console.log(z.datatype)
            }
 
          })
@@ -190,36 +266,6 @@ angular.module('yeomanD3App')
                        })
 
 
-     var buttons = d3.select(".buttons-d3").selectAll("button")
-                  .data(datatypes)
-                  .enter()
-                  .append("button")
-                  .attr("class","btn btn-default")
-                  .attr("width",100)
-                  .attr("height",20)
-                  .attr("fill",'#ccc')
-                  .attr("x",0)
-                  .attr("y",function(d,i){
-                    return i*40
-                  })
-                  .text(function (d) {
-                    return d
-                  })
-                  .on('click' , function(d){
-
-                    _.remove($rootScope.diseases.userselecteddatatypes,function (n) {
-                      return n === 'all'
-                    })
-
-                    if($rootScope.diseases.userselecteddatatypes.indexOf(d) < 0) {
-                        $rootScope.diseases.userselecteddatatypes.push(d)
-
-                        dendogram();
-                    }
-
-                  });
-
-
       data.forEach(function(k){
 
         var diseasePositionLeft = $('#'+k._source.name.replace(/\s/g, "") ).attr('cx')
@@ -259,22 +305,29 @@ angular.module('yeomanD3App')
             .enter()
             .append("line")
             .attr("id",function(d,i){
-              return "line"+d
+              return d.target.id
             })
             .attr("x1",diseasePositionLeft)
             .attr("y1",diseasePositionTop)
             .attr("x2",function(d,i){
-              if(d)
-              return $('#'+d.target.symbol.replace(/\s/g, "") ).attr('cx')
+              if($('#'+d.target.symbol.replace(/\s/g, "") ).attr('cx'))
+                return $('#'+d.target.symbol.replace(/\s/g, "") ).attr('cx')
+              else
+               return diseasePositionLeft
             })
             .attr("y2",function(d,i){
-              return $('#'+d.target.symbol.replace(/\s/g, "") ).attr('cy')
+              if( $('#'+d.target.symbol.replace(/\s/g, "") ).attr('cy') )
+                return $('#'+d.target.symbol.replace(/\s/g, "") ).attr('cy')
+              else
+                return diseasePositionTop
             })
             .attr("stroke","red")
             .attr("stroke-width","0.4")
 
-      })
 
+
+      })
+      $('#myModal').modal("hide")
     }
 
   }
