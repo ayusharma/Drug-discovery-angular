@@ -252,8 +252,10 @@
 
        var svg = d3.select(".viz")
                  .append("svg")
-                 .attr("width",w + margin.left + margin.right)
-                 .attr("height",h + margin.top + margin.bottom)
+                 .attr({
+                   "width":w + margin.left + margin.right,
+                   "height":h + margin.top + margin.bottom
+                 })
                  .append("g")
                  .attr("transform","translate("+margin.left+","+margin.top+")");
 
@@ -261,26 +263,28 @@
                      .data(data)
                      .enter()
                      .append("circle")
-                     .attr("id",function(d,i){
-                       return d._source.name.replace(/[\s'-+/".,]/g, "")+'node';
-                     })
-                     .attr("cx",0)
-                     .attr("cy",function(d,i){
-                       return i*30;
-                     })
-                     .attr("r",3)
-                     .on("mouseover",function(d){
-                            d3.select(this).style("opacity",".8");
-                            tooltip.transition().style("opacity","1");
-                            // console.log(d)
-                            tooltip.html(d._source.name)
-                            .style("left",(d3.event.pageX)+"px")
-                            .style("top",(d3.event.pageY)-15+"px");
-                    })
-                    .on("mouseout",function(d){
-                        d3.select(this).style("opacity","1");
-                        tooltip.transition().style("opacity","0");
-                    });
+                     .attr({
+                       "id": function(d,i){
+                         return d._source.name.replace(/[\s'-+/".,]/g, "")+'node';
+                       },
+                       "cx": 0,
+                       "cy": function(d,i){
+                         return i*30;
+                       },
+                       "r":3
+                   })
+                   .on("mouseover",function(d){
+                          d3.select(this).style("opacity",".8");
+                          tooltip.transition().style("opacity","1");
+                          // console.log(d)
+                          tooltip.html(d._source.name)
+                          .style("left",(d3.event.pageX)+"px")
+                          .style("top",(d3.event.pageY)-15+"px");
+                  })
+                  .on("mouseout",function(d){
+                      d3.select(this).style("opacity","1");
+                      tooltip.transition().style("opacity","0");
+                  });
 
 
 
@@ -288,11 +292,13 @@
                          .data(data)
                          .enter()
                          .append("text")
-                         .attr("width",100)
-                         .attr("height",30)
-                         .attr("x",0)
-                         .attr("y",function(d,i){
-                             return i*35;
+                         .attr({
+                           "width": 100,
+                           "height": 30,
+                           "x": 0,
+                           "y": function(d,i){
+                              return i*35;
+                            }
                          })
                          .text(function(d,i){
                            return d._source.name;
@@ -311,37 +317,44 @@
                         .data(targetSymbols)
                         .enter()
                         .append("circle")
-                        .attr("id",function (d,i) {
-                          return d.replace(/[\s'-+/".,]/g, "");
-                        })
-                        .attr("cx",300)
-                        .attr("cy",function(d,i){
-                          return i*30;
-                        })
-                        .attr("r",3);
+                        .attr({
+                          "id":function (d,i) {
+                            return d.replace(/[\s'-+/".,]/g, "");
+                          },
+                          "cx":300,
+                          "cy":function(d,i){
+                            return i*30;
+                          },
+                          "r":3
+                        });
 
           var targetDiseasesDot = svg.append('g').attr("class","target-diseases").selectAll("circle")
                         .data(targetDiseases)
                         .enter()
                         .append("circle")
-                        .attr("id",function (d,i) {
-                          return d.replace(/[\s'-+/".,]/g, "");
+                        .attr({
+                          "id":function (d,i) {
+                            return d.replace(/[\s'-+/".,]/g, "");
+                          },
+                          "cx":700,
+                          "cy":function(d,i){
+                            return i*30;
+                          },
+                          "r":5
                         })
-                        .attr("cx",700)
-                        .attr("cy",function(d,i){
-                          return i*30;
-                        })
-                        .attr("r",5);
+
 
           var targetDiseasesText = svg.append('g').attr("class","target-diseases-text").selectAll("text")
                       .data(targetDiseases)
                       .enter()
                       .append("text")
-                      .attr("width",100)
-                      .attr("height",30)
-                      .attr("x",750)
-                      .attr("y",function(d,i){
+                      .attr({
+                        "width":100,
+                        "height":30,
+                        "x":750,
+                        "y":function(d,i){
                           return i*30;
+                        }
                       })
                       .text(function(d,i){
                         return d;
@@ -355,11 +368,13 @@
                       .data(targetSymbols)
                       .enter()
                       .append("text")
-                      .attr("width",100)
-                      .attr("height",30)
-                      .attr("x",320)
-                      .attr("y",function(d,i){
-                          return i*30;
+                      .attr({
+                        "width":100,
+                        "height":30,
+                        "x":320,
+                        "y":function(d,i){
+                            return i*30;
+                        }
                       })
                       .text(function(d,i){
                         return d;
@@ -406,29 +421,31 @@
               .data(k._source.data)
               .enter()
               .append("line")
-              .attr("id",function(d,i){
-                return d.target.id;
+              .attr({
+                "id": function(d,i){
+                  return d.target.id;
+                },
+                "x1":diseasePositionLeft,
+                "y1":diseasePositionTop,
+                "x2":function(d,i){
+                  if($('#'+d.target.symbol.replace(/[\s'-+/".,]/g, "") ).attr('cx')) {
+                    return $('#'+d.target.symbol.replace(/[\s'-+/".,]/g, "") ).attr('cx');
+                  }
+                  else {
+                   return diseasePositionLeft;
+                 }
+               },
+               "y2":function(d,i){
+                 if( $('#'+d.target.symbol.replace(/[\s'-+/".,]/g, "") ).attr('cy') ) {
+                   return $('#'+d.target.symbol.replace(/[\s'-+/".,]/g, "") ).attr('cy');
+                 }
+                 else {
+                   return diseasePositionTop;
+                 }
+               },
+               "stroke":"red",
+               "stroke-width":"0.2"
               })
-              .attr("x1",diseasePositionLeft)
-              .attr("y1",diseasePositionTop)
-              .attr("x2",function(d,i){
-                if($('#'+d.target.symbol.replace(/[\s'-+/".,]/g, "") ).attr('cx')) {
-                  return $('#'+d.target.symbol.replace(/[\s'-+/".,]/g, "") ).attr('cx');
-                }
-                else {
-                 return diseasePositionLeft;
-               }
-              })
-              .attr("y2",function(d,i){
-                if( $('#'+d.target.symbol.replace(/[\s'-+/".,]/g, "") ).attr('cy') ) {
-                  return $('#'+d.target.symbol.replace(/[\s'-+/".,]/g, "") ).attr('cy');
-                }
-                else {
-                  return diseasePositionTop;
-                }
-              })
-              .attr("stroke","red")
-              .attr("stroke-width","0.2");
 
           k._source.targetSymbols.forEach(function(j){
 
@@ -444,37 +461,36 @@
                   .data(j.disease)
                   .enter()
                   .append("line")
-                  .attr("class",function(d,i){
-                    return j.symbol+'-'+d.replace(/[\s'-+/".,]/g, "")
+                  .attr({
+                    "class": function(d,i){
+                      return j.symbol+'-'+d.replace(/[\s'-+/".,]/g, "")
+                    },
+                    "x1": diseasehypoPositionLeft,
+                    "y1":diseasehypoPositionTop,
+                    "x2":function(d,i){
+                      if($('#'+d.replace(/[\s'-+/".,]/g, "") ).attr('cx')) {
+                        return $('#'+d.replace(/[\s'-+/".,]/g, "") ).attr('cx');
+                      }
+                      else {
+                       return diseasehypoPositionLeft;
+                     }
+                   },
+                   "y2":function(d,i){
+                     if( $('#'+d.replace(/[\s'-+/".,]/g, "") ).attr('cy') ) {
+                       return $('#'+d.replace(/[\s'-+/".,]/g, "") ).attr('cy');
+                     }
+                     else {
+                       return diseasehypoPositionTop;
+                     }
+                   },
+                   "stroke":"green",
+                   "stroke-width":"0.2"
                   })
-                  .attr("x1",diseasehypoPositionLeft)
-                  .attr("y1",diseasehypoPositionTop)
-                  .attr("x2",function(d,i){
-                    //console.log(d);
-                    if($('#'+d.replace(/[\s'-+/".,]/g, "") ).attr('cx')) {
-                      return $('#'+d.replace(/[\s'-+/".,]/g, "") ).attr('cx');
-                    }
-                    else {
-                     return diseasehypoPositionLeft;
-                   }
-                  })
-                  .attr("y2",function(d,i){
-                    if( $('#'+d.replace(/[\s'-+/".,]/g, "") ).attr('cy') ) {
-                      return $('#'+d.replace(/[\s'-+/".,]/g, "") ).attr('cy');
-                    }
-                    else {
-                      return diseasehypoPositionTop;
-                    }
-                  })
-                  .attr("stroke","green")
-                  .attr("stroke-width","0.2");
           }
-
-
           });
 
         });
         $('#myModal').modal("hide");
-      }
     }
+  }
   ]);
