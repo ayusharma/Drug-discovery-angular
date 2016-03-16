@@ -153,44 +153,8 @@
 
       };
 
-      var randomColor = (function(){
-        var golden_ratio_conjugate = 0.618033988749895;
-        var h = Math.random();
-
-        var hslToRgb = function (h, s, l){
-            var r, g, b;
-
-            if(s == 0){
-                r = g = b = l; // achromatic
-            }else{
-                function hue2rgb(p, q, t){
-                    if(t < 0) t += 1;
-                    if(t > 1) t -= 1;
-                    if(t < 1/6) return p + (q - p) * 6 * t;
-                    if(t < 1/2) return q;
-                    if(t < 2/3) return p + (q - p) * (2/3 - t) * 6;
-                    return p;
-                }
-
-                var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
-                var p = 2 * l - q;
-                r = hue2rgb(p, q, h + 1/3);
-                g = hue2rgb(p, q, h);
-                b = hue2rgb(p, q, h - 1/3);
-            }
-
-            return '#'+Math.round(r * 255).toString(16)+Math.round(g * 255).toString(16)+Math.round(b * 255).toString(16);
-        };
-
-        return function(){
-          h += golden_ratio_conjugate;
-          h %= 1;
-          return hslToRgb(h, 0.5, 0.60);
-        };
-      })();
       /*
       Main visualization function
-
       */
       function dendogram(){
 
@@ -239,15 +203,14 @@
 
          });
 
-        k._source.targetSymbols.map(function(w){
-            targetDiseases = _.uniq(targetDiseases.concat(w.disease)).sort();
 
-        });
 
       });
 
        //removes the dunpicate values
        targetSymbols = _.uniqBy(targetSymbols);
+
+
 
 
        var svg = d3.select(".viz")
@@ -309,6 +272,16 @@
 
 
         data.forEach(function(k){
+
+          targetSymbols.map(function(w){
+            var yy = _.find(k._source.targetSymbols,function(o){
+              return o.symbol === w
+            })
+
+            console.log(yy)
+            targetDiseases = _.uniq(targetDiseases.concat(yy.disease)).sort();
+
+          });
 
           var diseasePositionLeft = $('#'+k._source.name.replace(/[\s'-+/".,]/g, "")+'node' ).attr('cx');
           var diseasePositionTop = $('#'+k._source.name.replace(/[\s'-+/".,]/g, "")+'node' ).attr('cy');
@@ -402,7 +375,7 @@
                           //
                           userselectedTargets.map(function(mm){
                             $('.'+mm+'-disease-line').children().css('opacity',1).attr("stroke-width",2)
-                            .attr("stroke",randomColor)
+                            .attr("stroke","purple")
                           })
 
 
@@ -454,6 +427,9 @@
             if ( diseasehypoPositionLeft && diseasehypoPositionTop) {
             // d.disease.forEach(function(g){
               var targetDiseasesline = svg.append("g")
+                  .attr("id",function(){
+                     return 'line';
+                  })
                   .attr("class",function(){
                      return j.symbol+'-'+'disease-line';
                   })
