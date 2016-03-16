@@ -9,7 +9,7 @@
 angular.module('yeomanD3App')
   .directive('loadingmodal', function () {
     return {
-      templateUrl: './views/loadingmodal.html',
+      templateUrl: 'views/loadingmodal.html',
       restrict: 'E',
       link: function postLink(scope, element, attrs) {
         // element.text('this is the loadingmodal directive');

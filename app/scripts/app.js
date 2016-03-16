@@ -21,18 +21,15 @@ angular
         controller: 'MainCtrl',
         controllerAs: 'main'
       })
-      .when('/about', {
-        templateUrl: 'views/about.html',
-        controller: 'AboutCtrl',
-        controllerAs: 'about'
-      })
       .otherwise({
         redirectTo: '/'
       });
   })
 
   .run(function($rootScope){
+    //disease object
     $rootScope.diseases = {};
+    //array to store the user selected datatype
     $rootScope.diseases.userselecteddatatypes = ["all"];
 
   });

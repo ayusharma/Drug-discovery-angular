@@ -62,15 +62,23 @@
         <h3 class="panel-title">User Activity</h3>
       </div>
       <div class="panel-body">
-        <h5>Selecte a disease</h5>
+        <h5>Click to select a disease</h5>
         <!-- <form> -->
-          <div class="form-group">
+          <!-- <div class="form-group">
             <select  class="form-control" ng-model="diseases.default" ng-options="option as option.fields.name[0]  for option in diseases.names track by option._id" ng-change="onSelectChange()" required>
                <option style="display:none" value="">select a disease</option>
             </select>
-          </div>
+          </div> -->
            <!-- <button type="submit" class="btn btn-info btn-block" ng-click="submitForm();">Submit</button> -->
         <!-- </form> -->
+
+        <span class="label label-success"
+        style="margin-right:8px; cursor:pointer;"
+        ng-repeat="x in diseases.names track by $index"
+        ng-click="submitForm(x)">
+        {{ x.fields.name[0] }}
+      </span>
+
       </div>
     </div>
 
@@ -82,12 +90,12 @@
         <h3 class="panel-title">Activity Panel</h3>
       </div>
       <div class="panel-body">
-        <h5>Slected Diseases</h5>
-        <div class="alert alert-danger" role="alert" ng-hide="diseases.userselected.length">No Diseases has selected.</div>
-        <span class="label label-default"
+        <h5>Click to remove a disease</h5>
+        <div class="alert alert-danger" role="alert" ng-hide="diseases.userselected.length">No Diseases has been selected.</div>
+        <span class="label label-info"
         style="margin-right:8px"
         ng-repeat="x in diseases.userselected track by $index"
-        ng-click="removeDisease($event,x)">
+        ng-click="removeDisease(x)">
         {{ x.fields.name[0] }}
       </span>
 
@@ -126,7 +134,7 @@
       </div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-md-3 buttons-d3">
+          <div class="col-md-2 buttons-d3">
             <!-- <div class="btn-group">
                 <label class="btn btn-primary" ng-model="checkModel.left" uib-btn-checkbox>Left</label>
                 <label class="btn btn-primary" ng-model="checkModel.middle" uib-btn-checkbox>Middle</label>
@@ -136,9 +144,10 @@
 
             <div ng-repeat="d in diseases.datatypes">
               <input type="checkbox" ng-model="d.value" ng-change="updateViz()"> {{ d.datatype }}
+              <span class="badge">{{ d.count }}</span>
             </div>
           </div>
-          <div class="col-md-9 viz"></div>
+          <div class="col-md-10 viz"></div>
         </div>
       </div>
     </div>
