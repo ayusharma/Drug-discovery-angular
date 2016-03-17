@@ -1,6 +1,6 @@
 'use strict';
 
-var baseUrl = 'http://localhost:5000/'
+var baseUrl = 'http://128.199.84.2/'
 
 /**
  * @ngdoc service

@@ -161,6 +161,7 @@
         //store the all target drugs
         var targetSymbols = [],
             targetDiseases = [],
+            totalTargetDiseases = [],
             userselectedTargets = [];
 
 
@@ -198,19 +199,31 @@
             } else if ($rootScope.diseases.userselecteddatatypes.map(_.property('datatype')).indexOf(z.datatype) >= 0 && z.association_score > 0){
                targetSymbols.push(p.target.symbol);
              }
-
            });
 
          });
 
+        //  console.log(k._source.targetSymbols)
 
+         totalTargetDiseases = _.uniq(totalTargetDiseases.concat(k._source.targetSymbols)).sort();
 
       });
 
        //removes the dunpicate values
        targetSymbols = _.uniqBy(targetSymbols);
 
+        // totalTargetDiseases.forEach(function(k){
 
+          targetSymbols.map(function(w){
+            var yy = _.find(totalTargetDiseases,function(o){
+              return o.symbol === w
+            })
+
+            // console.log(yy)
+            targetDiseases = _.uniq(targetDiseases.concat(yy.disease)).sort();
+
+          });
+        // })
 
 
        var svg = d3.select(".viz")
@@ -271,17 +284,12 @@
                          })
 
 
+
+      //
+      // console.log(targetSymbols)
+
+
         data.forEach(function(k){
-
-          targetSymbols.map(function(w){
-            var yy = _.find(k._source.targetSymbols,function(o){
-              return o.symbol === w
-            })
-
-            console.log(yy)
-            targetDiseases = _.uniq(targetDiseases.concat(yy.disease)).sort();
-
-          });
 
           var diseasePositionLeft = $('#'+k._source.name.replace(/[\s'-+/".,]/g, "")+'node' ).attr('cx');
           var diseasePositionTop = $('#'+k._source.name.replace(/[\s'-+/".,]/g, "")+'node' ).attr('cy');
@@ -353,24 +361,26 @@
                         return d;
                       })
                       .on("click",function(d){
-                        var l = _.find(k._source.targetSymbols, function(o) { return o.symbol === d; });
+                        var l = _.find(totalTargetDiseases, function(o) { return o.symbol === d; });
                         if($(this).hasClass("italic")) {
-                          userselectedTargets.pop(d);
+                          userselectedTargets.pop(d.trim());
+
                           l.disease.map(function(zz){
+                            // co
                             $("line."+d+"-"+zz.replace(/[\s'-+/".,]/g, ""))
                             .attr("stroke-width",0.2)
                             .attr("stroke","green")
                             .css('opacity',0);
 
                           })
-                          $(this).removeClass("italic active");
+                          $(this).removeClass("italic");
                           if(userselectedTargets.length === 0) {
                             $('line').css('opacity',1);
                           }
 
                         } else {
 
-                          userselectedTargets.push(d);
+                          userselectedTargets.push(d.trim());
                           $('line').css('opacity',0);
                           //
                           userselectedTargets.map(function(mm){
