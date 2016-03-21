@@ -1,6 +1,6 @@
 'use strict';
 
-var baseUrl = 'http://128.199.84.2/'
+var baseUrlDisease = 'https://www.targetvalidation.org/api/latest/association?disease='
 
 /**
  * @ngdoc service
@@ -15,18 +15,20 @@ angular.module('yeomanD3App')
 
   var dataService = {};
 
-  dataService.getAll = function(){
+  // dataService.getAll = function(){
 
-   return  $http.get(baseUrl+'diseases/names').then(function(res){
-      return res.data;
-    })
-  }
+
+
+  //  return  $http.get(baseUrl+'diseases/names').then(function(res){
+  //     return res.data;
+  //   })
+  // }
 
   dataService.crawl = function(code){
 
 		var req = {
 			method:'POST',
-			url:baseUrl +'crawl',
+			url:'http://localhost:5000/crawl',
 			headers: {
 				'Content-Type': 'application/json'
 			},
@@ -41,44 +43,50 @@ angular.module('yeomanD3App')
 
   }
 
-  dataService.selected = function(selected_values){
+  dataService.selected = function(code,arr){
+
+    var url = baseUrlDisease+code
+    var param = ''
+    if(arr.length){
+      arr.map(function(k){
+        param = param+'&filterbydatatype='+k
+      })
+    }
 
 		var req = {
-			method:'POST',
-			url: baseUrl+ 'diseases/selected',
+			method:'GET',
+      url: url+param,
 			headers: {
 				'Content-Type': 'application/json'
-			},
-			data:{
-				'selected_values': selected_values
 			}
-		}
+		};
+
 
 		return $http(req).then(function(res){
 			return res;
 		});
 
   }
-
-  dataService.DatatypeSelected = function(selected_datatypes,selected_diseases){
-
-		var req = {
-			method:'POST',
-			url: baseUrl+ 'diseases/datatypes',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			data:{
-				'selected_datatypes': selected_datatypes,
-        'selected_diseases': selected_diseases
-			}
-		}
-
-		return $http(req).then(function(res){
-			return res;
-		});
-
-  }
+  //
+  // dataService.DatatypeSelected = function(selected_datatypes,selected_diseases){
+  //
+	// 	var req = {
+	// 		method:'POST',
+	// 		url: baseUrl+ 'diseases/datatypes',
+	// 		headers: {
+	// 			'Content-Type': 'application/json'
+	// 		},
+	// 		data:{
+	// 			'selected_datatypes': selected_datatypes,
+  //       'selected_diseases': selected_diseases
+	// 		}
+	// 	}
+  //
+	// 	return $http(req).then(function(res){
+	// 		return res;
+	// 	});
+  //
+  // }
 
   return dataService;
 

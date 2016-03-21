@@ -75,8 +75,8 @@
         <span class="label label-success"
         style="margin-right:8px; cursor:pointer;"
         ng-repeat="x in diseases.names track by $index"
-        ng-click="submitForm(x)">
-        {{ x.fields.name[0] }}
+        ng-click="selectDisease(x)">
+        {{ x.name }}
       </span>
 
       </div>
@@ -96,7 +96,7 @@
         style="margin-right:8px"
         ng-repeat="x in diseases.userselected track by $index"
         ng-click="removeDisease(x)">
-        {{ x.fields.name[0] }}
+        {{ x.name }}
       </span>
 
       </div>
@@ -135,15 +135,9 @@
       <div class="panel-body">
         <div class="row">
           <div class="col-md-2 buttons-d3">
-            <!-- <div class="btn-group">
-                <label class="btn btn-primary" ng-model="checkModel.left" uib-btn-checkbox>Left</label>
-                <label class="btn btn-primary" ng-model="checkModel.middle" uib-btn-checkbox>Middle</label>
-                <label class="btn btn-primary" ng-model="checkModel.right" uib-btn-checkbox>Right</label>
-            </div> -->
-            <!-- <button class="btn btn-default" ng-class="{'active':active }"  ng-click="updateViz(d,$event)" ng-repeat="d in diseases.datatypes">{{ d.count }}</button> -->
-
             <div ng-repeat="d in diseases.datatypes">
-              <input type="checkbox" ng-model="d.value" ng-change="updateViz()"> {{ d.datatype }}
+              <input
+              type="checkbox" ng-model="d.value" ng-change="updateViz()"> {{ d.key }}
               <span class="badge">{{ d.count }}</span>
             </div>
           </div>
