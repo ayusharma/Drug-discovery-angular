@@ -56,7 +56,8 @@
       };
 
       $rootScope.submitDiseaseCode = function(){
-        if ($rootScope.diseases.crawlcode !== null){
+        console.log($rootScope.diseases.crawlcode)
+        if ($rootScope.diseases.crawlcode){
           $rootScope.modaltext = "Crawling Data";
           $('#myModal').modal("show");
           Diseases.crawl($rootScope.diseases.crawlcode).then(function(res){
